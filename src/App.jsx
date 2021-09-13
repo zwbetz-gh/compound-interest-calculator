@@ -5,11 +5,36 @@ import {useForm} from 'react-hook-form';
 function App() {
   const {
     register,
+    setValue,
     handleSubmit,
     formState: {errors}
   } = useForm();
 
-  const onSubmit = (data) => console.log(data);
+  const compound = (
+    initialAmount,
+    monthlyContribution,
+    timeInYears,
+    interestRate
+  ) => {
+    let result = initialAmount;
+    const yearlyContribution = monthlyContribution * 12;
+    const interestRateAsDecimal = interestRate / 100;
+    for (let i = 0; i < timeInYears; i++) {
+      result = (result + yearlyContribution) * (1 + interestRateAsDecimal);
+    }
+    return result.toFixed(2);
+  };
+
+  const onSubmit = (data) => {
+    console.log(data);
+    const finalAmount = compound(
+      Number(data.initialAmount),
+      Number(data.monthlyContribution),
+      Number(data.timeInYears),
+      Number(data.interestRate)
+    );
+    setValue('finalAmount', finalAmount);
+  };
 
   const requiredAsterisk = <span className="custom-required">*</span>;
 
@@ -21,34 +46,43 @@ function App() {
           <label htmlFor="initialAmount" className="form-label">
             Initial amount {requiredAsterisk}
           </label>
-          <input
-            id="initialAmount"
-            type="number"
-            className="form-control"
-            {...register('initialAmount', {required: true})}
-          />
+          <div className="input-group">
+            <span className="input-group-text">$</span>
+            <input
+              id="initialAmount"
+              type="number"
+              className="form-control"
+              {...register('initialAmount', {required: true, min: 0})}
+            />
+          </div>
           {errors.initialAmount && (
             <p id="initialAmountError" className="custom-error">
-              Initial amount is required
+              Initial amount must be 0 or more
             </p>
           )}
         </div>
+
         <div className="mb-3">
           <label htmlFor="monthlyContribution" className="form-label">
-            Monthly contribution {requiredAsterisk}
+            Monthly contribution in dollars {requiredAsterisk}
           </label>
-          <input
-            id="monthlyContribution"
-            type="number"
-            className="form-control"
-            {...register('monthlyContribution', {required: true})}
-          />
+          <div className="input-group">
+            <span className="input-group-text">$</span>
+            <input
+              id="monthlyContribution"
+              type="number"
+              className="form-control"
+              {...register('monthlyContribution', {required: true, min: 0})}
+            />
+          </div>
+
           {errors.monthlyContribution && (
             <p id="monthlyContributionError" className="custom-error">
-              Monthly contribution is required
+              Monthly contribution must be 0 or more
             </p>
           )}
         </div>
+
         <div className="mb-3">
           <label htmlFor="timeInYears" className="form-label">
             Length of time in years {requiredAsterisk}
@@ -57,41 +91,52 @@ function App() {
             id="timeInYears"
             type="number"
             className="form-control"
-            {...register('timeInYears', {required: true})}
+            {...register('timeInYears', {required: true, min: 1})}
           />
           {errors.timeInYears && (
             <p id="timeInYearsError" className="custom-error">
-              Length of time in years is required
+              Length of time in years must be 1 or more
             </p>
           )}
         </div>
+
         <div className="mb-3">
           <label htmlFor="interestRate" className="form-label">
-            Interest rate {requiredAsterisk}
+            Interest rate as percentage {requiredAsterisk}
           </label>
-          <input
-            id="interestRate"
-            type="number"
-            className="form-control"
-            {...register('interestRate', {required: true})}
-          />
+          <div className="input-group">
+            <span className="input-group-text">%</span>
+            <input
+              id="interestRate"
+              type="number"
+              className="form-control"
+              {...register('interestRate', {required: true, min: 1})}
+            />
+          </div>
           {errors.interestRate && (
             <p id="interestRateError" className="custom-error">
-              Interest rate is required
+              Interest rate as percentage must be 1 or more
             </p>
           )}
         </div>
+
         <div className="mb-3">
-          <label htmlFor="final_amount" className="form-label">
+          <label htmlFor="finalAmount" className="form-label">
             Final amount
           </label>
-          <input
-            id="final_amount"
-            type="number"
-            className="form-control"
-            disabled
-          />
+          <div className="input-group">
+            <span className="input-group-text">$</span>
+            <input
+              id="finalAmount"
+              type="number"
+              className="form-control"
+              disabled
+              readOnly
+              {...register('finalAmount')}
+            />
+          </div>
         </div>
+
         <button type="submit" className="btn btn-primary">
           Submit
         </button>
