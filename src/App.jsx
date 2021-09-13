@@ -158,6 +158,14 @@ function App() {
             Submit
           </button>
         </div>
+
+        <hr />
+
+        <small>
+          <a href="https://github.com/zwbetz-gh/compound-interest-calculator">
+            GitHub
+          </a>
+        </small>
       </form>
     </div>
   );

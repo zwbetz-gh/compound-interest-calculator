@@ -17,9 +17,8 @@
 
 .custom-button-box {
   display: flex;
-  justify-content: flex-end;
 }
 
 .custom-button {
-  margin-left: 0.5rem;
+  margin-right: 0.5rem;
 }
