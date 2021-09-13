@@ -14,3 +14,12 @@
   margin-top: 0.5rem;
   color: #dc3545;
 }
+
+.custom-button-box {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.custom-button {
+  margin-left: 0.5rem;
+}

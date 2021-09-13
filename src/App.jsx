@@ -10,7 +10,9 @@ function App() {
     formState: {errors}
   } = useForm();
 
-  const compound = (
+  const requiredAsterisk = <span className="custom-required">*</span>;
+
+  const calculateFinalAmount = (
     initialAmount,
     monthlyContribution,
     timeInYears,
@@ -22,12 +24,11 @@ function App() {
     for (let i = 0; i < timeInYears; i++) {
       result = (result + yearlyContribution) * (1 + interestRateAsDecimal);
     }
-    return result.toFixed(2);
+    return Math.round(result);
   };
 
   const onSubmit = (data) => {
-    console.log(data);
-    const finalAmount = compound(
+    const finalAmount = calculateFinalAmount(
       Number(data.initialAmount),
       Number(data.monthlyContribution),
       Number(data.timeInYears),
@@ -36,7 +37,17 @@ function App() {
     setValue('finalAmount', finalAmount);
   };
 
-  const requiredAsterisk = <span className="custom-required">*</span>;
+  const onReset = React.useCallback(() => {
+    setValue('initialAmount', '10000');
+    setValue('monthlyContribution', '100');
+    setValue('timeInYears', '10');
+    setValue('interestRate', '7');
+  }, [setValue]);
+
+  React.useEffect(() => {
+    onReset();
+    console.count('render');
+  }, [onReset]);
 
   return (
     <div className="container custom-container">
@@ -44,7 +55,7 @@ function App() {
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="mb-3">
           <label htmlFor="initialAmount" className="form-label">
-            Initial amount {requiredAsterisk}
+            Initial amount in dollars {requiredAsterisk}
           </label>
           <div className="input-group">
             <span className="input-group-text">$</span>
@@ -57,7 +68,7 @@ function App() {
           </div>
           {errors.initialAmount && (
             <p id="initialAmountError" className="custom-error">
-              Initial amount must be 0 or more
+              Initial amount in dollars must be 0 or more
             </p>
           )}
         </div>
@@ -109,6 +120,7 @@ function App() {
             <input
               id="interestRate"
               type="number"
+              step="0.01"
               className="form-control"
               {...register('interestRate', {required: true, min: 1})}
             />
@@ -130,16 +142,20 @@ function App() {
               id="finalAmount"
               type="number"
               className="form-control"
-              disabled
               readOnly
               {...register('finalAmount')}
             />
           </div>
         </div>
 
-        <button type="submit" className="btn btn-primary">
-          Submit
-        </button>
+        <div className="custom-button-box">
+          <button className="btn btn-secondary custom-button" onClick={onReset}>
+            Reset
+          </button>
+          <button type="submit" className="btn btn-primary custom-button">
+            Submit
+          </button>
+        </div>
       </form>
     </div>
   );
