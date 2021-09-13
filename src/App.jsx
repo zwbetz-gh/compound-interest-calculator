@@ -44,9 +44,11 @@ function App() {
     setValue('interestRate', '7');
   }, [setValue]);
 
+  /**
+   * Run once on page load.
+   */
   React.useEffect(() => {
     onReset();
-    console.count('render');
   }, [onReset]);
 
   return (
